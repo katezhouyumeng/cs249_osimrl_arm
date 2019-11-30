@@ -1,7 +1,9 @@
 from osim_rl_master.osim.env.armLocalAct import Arm2DVecEnv
+from osim_rl_master.osim.env.armLocalAct import Arm2DEnv
 
 
-arm = Arm2DVecEnv(visualize=True)
+
+arm = Arm2DEnv(visualize=True)
 
 print("is it local", arm.islocal)
 arm.reset()
@@ -18,4 +20,5 @@ for k in range(500):
 		action = [0,0,0,0,0,0,10]
 	print(action)
 	new_state, reward, done, _ = arm.step(action, obs_as_dict=False)
+	print(arm.istep)
 

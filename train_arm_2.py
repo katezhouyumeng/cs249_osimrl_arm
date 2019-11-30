@@ -31,7 +31,7 @@ class ActorCritic:
 		self.epsilon = 0.3
 		self.epsilon_decay = 1   # how much exploration is decaying - not decaying
 		self.gamma = .95
-		self.tau   = 0.3
+		self.tau   = 0.125
 
 		# ===================================================================== #
 		#                               Actor Model                             #
@@ -74,13 +74,13 @@ class ActorCritic:
 
 	def create_actor_model(self):
 		state_input = Input(shape=self.env.observation_space.shape)
-		h1 = Dense(16, activation='relu')(state_input)
-		h2 = Dense(14, activation='relu')(h1)
-		h3 = Dense(12, activation='relu')(h2)
-		output = Dense(self.env.action_space.shape[0], activation='sigmoid')(h3)
+		h1 = Dense(4, activation='relu')(state_input)
+		# h2 = Dense(14, activation='relu')(h1)
+		# h3 = Dense(12, activation='relu')(h2)
+		output = Dense(self.env.action_space.shape[0], activation='sigmoid')(h1)
 		
 		model = Model(input=state_input, output=output)
-		adam  = Adam(lr=0.01)
+		adam  = Adam(lr=0.001)
 		model.compile(loss="mse", optimizer=adam)
 		return state_input, model
 
@@ -97,7 +97,7 @@ class ActorCritic:
 		output = Dense(1, activation='relu')(merged_h1)
 		model  = Model(input=[state_input,action_input], output=output)
 		
-		adam  = Adam(lr=0.01)
+		adam  = Adam(lr=0.001)
 		model.compile(loss="mse", optimizer=adam)
 		return state_input, action_input, model
 
@@ -154,8 +154,10 @@ class ActorCritic:
 		for s in samples:
 			cur_state, action, reward, new_state, done = s
 			reward_all += reward
-		self._train_critic(samples)
+
+		# order of these swapped
 		self._train_actor(samples)
+		self._train_critic(samples)
 		return reward_all
 
 	# ========================================================================= #
@@ -167,7 +169,7 @@ class ActorCritic:
 		actor_target_weights = self.target_actor_model.get_weights()
 		
 		for i in range(len(actor_target_weights)):
-			actor_target_weights[i] = actor_model_weights[i]
+			actor_target_weights[i] = self.tau*actor_model_weights[i] + (1-self.tau)*actor_target_weights[i] 
 		self.target_actor_model.set_weights(actor_target_weights)
 
 	def _update_critic_target(self):
@@ -201,8 +203,8 @@ def main():
 	actor_critic = ActorCritic(env, sess)
 
 	num_episode = 50  # number of episodes
-	episode_len  = 100
-	batch_size = 10
+	episode_len  = 55
+	batch_size = 1
 
 	env.time_limit = episode_len
 
@@ -237,6 +239,8 @@ def main():
 
 			# print('what is the action', action[0])
 			new_state, reward, done, _ = env.step(action[0], obs_as_dict=False)
+			# env.integrate()
+			print(env.istep)
 
 			# if reward<0.99:
 			# 	done = False
@@ -272,7 +276,7 @@ def main():
 				# sample = random.sample(actor_critic.memory, 1)
 				r_all = actor_critic.train(batch_size)
 				episode_reward[e] += r_all
-				actor_critic.update_target()
+			actor_critic.update_target()
 
 			cur_state = new_state
 			k += 1

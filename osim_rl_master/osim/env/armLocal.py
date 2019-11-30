@@ -113,7 +113,7 @@ class Arm2DEnv(OsimEnv):
             penalty = 1
 
         # print('penalty returned', 1.-2**(penalty))
-        return 1.-penalty
+        return -penalty-self.istep
 
     def get_reward(self):
         return self.reward()

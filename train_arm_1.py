@@ -74,8 +74,8 @@ def policy_network(state):
 
 
 #set learning rates
-lr_actor = 0.00001  
-lr_critic = 0.0005
+lr_actor = 0.01  
+lr_critic = 0.01
 
 # define required placeholders
 action_placeholder = tf.placeholder(tf.float32)
@@ -121,10 +121,11 @@ def scale_state(state):                 #requires input shape=(2,)
 ################################################################
 #Training loop
 gamma = 0.99        #discount factor
-num_episodes = 500
+num_episodes = 50
 max_step = 50
 env.time_limit = max_step
-epsilon =.1
+epsilon =.3
+batch_size = 1
 
 
 
@@ -175,27 +176,27 @@ with tf.Session() as sess:
                     {state_placeholder: scale_state(next_state)})  
             #Set TD Target
             #target = r + gamma * V(next_state)     
-            # target = reward + gamma * np.squeeze(V_of_next_state)
+            target = reward + gamma * np.squeeze(V_of_next_state)
 
-            # use real target
-            target = reward + gamma*env.reward() 
+
             
             # td_error = target - V(s)
             #needed to feed delta_placeholder in actor training
             td_error = target - np.squeeze(sess.run(V, feed_dict = 
                         {state_placeholder: scale_state(state)})) 
             
-            #Update actor by minimizing loss (Actor training)
-            _, loss_actor_val  = sess.run(
-                [training_op_actor, loss_actor], 
-                feed_dict={action_placeholder: np.squeeze(action), 
-                state_placeholder: scale_state(state), 
-                delta_placeholder: td_error})
-            #Update critic by minimizinf loss  (Critic training)
-            _, loss_critic_val  = sess.run(
-                [training_op_critic, loss_critic], 
-                feed_dict={state_placeholder: scale_state(state), 
-                target_placeholder: target})
+            if np.mod(steps, batch_size) ==0:
+                #Update actor by minimizing loss (Actor training)
+                _, loss_actor_val  = sess.run(
+                    [training_op_actor, loss_actor], 
+                    feed_dict={action_placeholder: np.squeeze(action), 
+                    state_placeholder: scale_state(state), 
+                    delta_placeholder: td_error})
+                #Update critic by minimizinf loss  (Critic training)
+                _, loss_critic_val  = sess.run(
+                    [training_op_critic, loss_critic], 
+                    feed_dict={state_placeholder: scale_state(state), 
+                    target_placeholder: target})
             
             state = np.array(next_state)
             #end while
