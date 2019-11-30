@@ -29,17 +29,20 @@ state_placeholder = tf.placeholder(tf.float32, [None, state_dims])
 
 
 def value_function(state):
-    n_hidden1 = 16 
+    n_hidden1 = 64 
     n_hidden2 = 4
     n_outputs = 1
     
     with tf.variable_scope("value_network"):
         init_xavier = tf.contrib.layers.xavier_initializer() # a method of intializing
         hidden1 = tf.layers.dense(state, n_hidden1, tf.nn.relu, init_xavier)
+        hidden2 = tf.layers.dense(hidden1, n_hidden1, tf.nn.relu, init_xavier)
+        hidden3 = tf.layers.dense(hidden2, n_hidden1, tf.nn.relu, init_xavier)
+
         # hidden1_action = tf.layers.dense(action, n_hidden1, tf.nn.relu, init_xavier)
         # hidden2 = hidden1 + hidden1_action
-        hidden2 = tf.layers.dense(hidden1, n_hidden2, tf.nn.relu, init_xavier) 
-        V = tf.layers.dense(hidden2, n_outputs, None, init_xavier)
+        hidden4 = tf.layers.dense(hidden3, n_hidden2, tf.nn.relu, init_xavier) 
+        V = tf.layers.dense(hidden4, n_outputs, tf.compat.v1.keras.activations.linear, init_xavier)
     return V
 
 def policy_network(state):
@@ -74,8 +77,8 @@ def policy_network(state):
 
 
 #set learning rates
-lr_actor = 0.01  
-lr_critic = 0.01
+lr_actor = 0.001  
+lr_critic = 0.001
 
 # define required placeholders
 action_placeholder = tf.placeholder(tf.float32)
@@ -116,18 +119,35 @@ def scale_state(state):                 #requires input shape=(2,)
     scaled = scaler.transform([state])
     return scaled                       #returns shape =(1,2)   
 ###################################################################
+###################################################################
+# Define fake critic
+def fake_critic(state):
+    target_x = state[0]
+    target_y = state[1]
 
+    pos_x = state[-2]
+    pos_y = state[-1]
+
+    penalty = (pos_x - target_x)**2 + (pos_y - target_y)**2
+    return -penalty
 
 ################################################################
 #Training loop
 gamma = 0.99        #discount factor
-num_episodes = 50
-max_step = 50
+num_episodes = 200
+max_step = 70
 env.time_limit = max_step
-epsilon =.3
-batch_size = 1
+epsilon =0
+batch_size = 5
 
-
+# debug code
+# env.reset()
+# state_desc = env.get_state_desc()
+# print(state_desc["joint_pos"]["r_elbow"])
+# print(state_desc["markers"])
+# act1 = env.action_space.sample()
+# env.step(act1)
+# print(state_desc)
 
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
@@ -135,13 +155,18 @@ with tf.Session() as sess:
     for episode in range(num_episodes):
         #receive initial state from E
         goal = env.reset()   # state.shape -> (2,)
-        print(env.get_observation())
+        # print(env.get_observation())
         state = np.array(env.get_observation())
         INIT_state = np.array(env.get_observation())
 
         reward_total = 0 
         steps = 0
         done = False
+        # if episode>50:
+        #     max_step = 20
+        # elif episode>75:
+        #     max_step = 50
+
         while (not done) and steps<max_step:
                 
             #Sample action according to current policy
@@ -174,6 +199,10 @@ with tf.Session() as sess:
             #V_of_next_state.shape=(1,1)
             V_of_next_state = sess.run(V, feed_dict = 
                     {state_placeholder: scale_state(next_state)})  
+
+            V_of_next_state_fake = fake_critic(next_state)
+            # print('predicted V', V_of_next_state)
+            # print("true V", V_of_next_state_fake)
             #Set TD Target
             #target = r + gamma * V(next_state)     
             target = reward + gamma * np.squeeze(V_of_next_state)
@@ -184,6 +213,8 @@ with tf.Session() as sess:
             #needed to feed delta_placeholder in actor training
             td_error = target - np.squeeze(sess.run(V, feed_dict = 
                         {state_placeholder: scale_state(state)})) 
+
+            # td_error = target - fake_critic(state)
             
             if np.mod(steps, batch_size) ==0:
                 #Update actor by minimizing loss (Actor training)
@@ -204,10 +235,10 @@ with tf.Session() as sess:
         print("Episode: {}, Number of Steps : {}, Cumulative reward: {:0.2f}".format(
             episode, steps, reward_total))
         
-        if np.mean(episode_history[-100:]) > 90 and len(episode_history) >= 101:
-            print("****************Solved***************")
-            print("Mean cumulative reward over 100 episodes:{:0.2f}" .format(
-                np.mean(episode_history[-100:])))
+        # if np.mean(episode_history[-100:]) > 90 and len(episode_history) >= 101:
+        #     print("****************Solved***************")
+        #     print("Mean cumulative reward over 100 episodes:{:0.2f}" .format(
+        #         np.mean(episode_history[-100:])))
 
 # do some ploting
 plt.plot(episode_history)

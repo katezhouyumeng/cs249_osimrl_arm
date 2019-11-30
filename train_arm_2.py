@@ -28,10 +28,10 @@ class ActorCritic:
 		self.sess = sess
 
 		self.learning_rate = 0.01
-		self.epsilon = 0.3
+		self.epsilon = 0.1
 		self.epsilon_decay = 1   # how much exploration is decaying - not decaying
-		self.gamma = .95
-		self.tau   = 0.125
+		self.gamma = .99
+		self.tau   = 0.001
 
 		# ===================================================================== #
 		#                               Actor Model                             #
@@ -74,10 +74,10 @@ class ActorCritic:
 
 	def create_actor_model(self):
 		state_input = Input(shape=self.env.observation_space.shape)
-		h1 = Dense(4, activation='relu')(state_input)
-		# h2 = Dense(14, activation='relu')(h1)
-		# h3 = Dense(12, activation='relu')(h2)
-		output = Dense(self.env.action_space.shape[0], activation='sigmoid')(h1)
+		h1 = Dense(32, activation='relu')(state_input)
+		h2 = Dense(32, activation='relu')(h1)
+		h3 = Dense(32, activation='relu')(h2)
+		output = Dense(self.env.action_space.shape[0], activation='sigmoid')(h3)
 		
 		model = Model(input=state_input, output=output)
 		adam  = Adam(lr=0.001)
@@ -86,20 +86,35 @@ class ActorCritic:
 
 	def create_critic_model(self):
 		state_input = Input(shape=self.env.observation_space.shape)
-		state_h1 = Dense(10, activation='relu')(state_input)
-		state_h2 = Dense(6)(state_h1)
+		state_h1 = Dense(64, activation='relu')(state_input)
+		state_h2 = Dense(64)(state_h1)
+		state_h3 = Dense(64)(state_h2)
 		
 		action_input = Input(shape=self.env.action_space.shape)
-		action_h1    = Dense(6)(action_input)
+		action_h1    = Dense(64)(action_input)
 		
-		merged    = Add()([state_h2, action_h1])
+		merged    = Add()([state_h3, action_h1])
 		merged_h1 = Dense(2, activation='relu')(merged)
-		output = Dense(1, activation='relu')(merged_h1)
+		output = Dense(1, activation='linear')(merged_h1)
 		model  = Model(input=[state_input,action_input], output=output)
 		
 		adam  = Adam(lr=0.001)
 		model.compile(loss="mse", optimizer=adam)
 		return state_input, action_input, model
+
+			###################################################################
+	# Define fake critic
+	def fake_critic(self,state):
+	    target_x = state[0]
+	    target_y = state[1]
+
+	    pos_x = state[-2]
+	    pos_y = state[-1]
+
+	    penalty = (pos_x - target_x)**2 + (pos_y - target_y)**2
+	    return 1.-penalty
+
+################################################################
 
 	# ========================================================================= #
 	#                               Model Training                              #
@@ -128,6 +143,7 @@ class ActorCritic:
 			cur_state, action, reward, new_state, done = sample
 			if not done:
 				target_action = self.target_actor_model.predict(new_state)
+				# future_reward_fake = self.fake_critic(new_state[0])
 				future_reward = self.target_critic_model.predict(
 					[new_state, target_action])[0][0]
 				reward += self.gamma * future_reward
@@ -156,8 +172,8 @@ class ActorCritic:
 			reward_all += reward
 
 		# order of these swapped
-		self._train_actor(samples)
 		self._train_critic(samples)
+		self._train_actor(samples)
 		return reward_all
 
 	# ========================================================================= #
@@ -198,13 +214,13 @@ class ActorCritic:
 def main():
 	sess = tf.Session()
 	K.set_session(sess)  # not sure about this, probably just setting to keras
-	env = Arm2DEnv(visualize=True)
+	env = Arm2DVecEnv(visualize=True)
 
 	actor_critic = ActorCritic(env, sess)
 
-	num_episode = 50  # number of episodes
-	episode_len  = 55
-	batch_size = 1
+	num_episode = 100  # number of episodes
+	episode_len  = 100
+	batch_size = 5
 
 	env.time_limit = episode_len
 
@@ -224,6 +240,11 @@ def main():
 		actor_critic.memory = deque(maxlen=2000)
 		r_all = 0
 
+		# if e>50:
+		# 	episode_len = 20
+		# elif e>75:
+		# 	episode_len = 50
+
 		while not done and k<episode_len:
 			cur_state = cur_state.reshape((1, env.observation_space.shape[0]))
 			# print('?@?$ current state is', cur_state)
@@ -240,7 +261,6 @@ def main():
 			# print('what is the action', action[0])
 			new_state, reward, done, _ = env.step(action[0], obs_as_dict=False)
 			# env.integrate()
-			print(env.istep)
 
 			# if reward<0.99:
 			# 	done = False
