@@ -13,6 +13,9 @@ from rl.agents import DDPGAgent
 from rl.memory import SequentialMemory
 from rl.random import OrnsteinUhlenbeckProcess
 
+sys.path.append('/Users/ykzhou/Documents/cs249_osimrl_arm/osim_rl_master/osim/env')
+sys.path.append('/Users/ykzhou/Documents/cs249_osimrl_arm/osim_rl_master/osim/env/utils')
+
 from osim.env.arm import Arm2DVecEnv
 
 from keras.optimizers import RMSprop

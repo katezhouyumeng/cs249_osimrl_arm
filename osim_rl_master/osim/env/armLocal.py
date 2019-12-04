@@ -9,7 +9,7 @@ from .osim import OsimEnv
 
 class Arm2DEnv(OsimEnv):
     model_path = os.path.join(os.path.dirname(__file__), '../models/arm2dof6musc.osim')    
-    time_limit = 2000
+    time_limit = 200
     target_x = 0
     target_y = 0
 
@@ -57,18 +57,18 @@ class Arm2DEnv(OsimEnv):
         return 16 #46
 
     def generate_new_target(self):
-        theta = random.uniform(math.pi*0, math.pi*2/3)
-        radius = random.uniform(0.3, 0.65)
-        # self.target_x = math.cos(theta) * radius 
-        # self.target_y = -math.sin(theta) * radius + 0.8
-        self.target_x = 0.5067948841189234
-        self.target_y = 0.682675170747885
+        theta = random.uniform(math.pi*0, math.pi*2/3)  # low and high
+        radius = random.uniform(0.1, 0.3)
+        self.target_x = math.cos(theta) * radius 
+        self.target_y = -math.sin(theta) * radius + 0.8
+        # self.target_x = 0.3067948841189234
+        # self.target_y = 0.682675170747885
 
         print('\ntarget: [{} {}]'.format(self.target_x, self.target_y))
 
         state = self.osim_model.get_state()
 
-#        self.target_joint.getCoordinate(0).setValue(state, self.target_x, False)
+       # self.target_joint.getCoordinate(0).setValue(state, self.target_x, False)
         self.target_joint.getCoordinate(1).setValue(state, self.target_x, False)
 
         self.target_joint.getCoordinate(2).setLocked(state, False)
@@ -115,7 +115,7 @@ class Arm2DEnv(OsimEnv):
             penalty = 1
 
         # print('penalty returned', 1.-2**(penalty))
-        return (1-penalty)
+        return 1.-penalty
 
     def get_reward(self):
         return self.reward()
@@ -140,7 +140,7 @@ class Arm2DVecEnv(Arm2DEnv):
             reward -10
 
         # if reached target big reward
-        if reward >0.99:
+        if reward >0.98:
             done = True
             reward+=10
 
@@ -148,7 +148,7 @@ class Arm2DVecEnv(Arm2DEnv):
         state_desc = self.get_state_desc()
         el_pos_x = state_desc["markers"]["r_humerus_epicondyle"]["pos"][0]
         wr_pos_x = obs[-2]
-        if el_pos_x > wr_pos_x+5e-2:
+        if el_pos_x > wr_pos_x+1e-1:
             reward = -10
             done = True
             print('elbow violation! ')

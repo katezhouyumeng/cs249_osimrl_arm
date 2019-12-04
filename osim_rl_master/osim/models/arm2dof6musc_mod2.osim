@@ -1548,7 +1548,7 @@
 							<!--Whether to show a coordinate frame-->
 							<show_axes>false</show_axes>
 							<!--Display Pref. 0:Hide 1:Wire 3:Flat 4:Shaded Can be overriden for individual geometries-->
-							<display_preference>0</display_preference>
+							<display_preference>4</display_preference>
 						</VisibleObject>
 						<PathWrapSet>
 							<objects>
@@ -1590,35 +1590,35 @@
 					<!--maximum normalized lengthening force-->
 					<Flen>1.8</Flen>
 				</Thelen2003Muscle>
-				<Thelen2003Muscle name="NEW_MUCS">
+				<Thelen2003Muscle name="NEW_MUSC">
 					<!--Flag indicating whether the force is disabled or not. Disabled means that the force is not active in subsequent dynamics realizations.-->
 					<isDisabled>false</isDisabled>
 					<!--Minimum allowed value for control signal. Used primarily when solving for control values.-->
 					<min_control>0</min_control>
 					<!--Maximum allowed value for control signal. Used primarily when solving for control values.-->
-					<max_control>10</max_control>
+					<max_control>1</max_control>
 					<!--The set of points defining the path of the muscle.-->
 					<GeometryPath>
 						<PathPointSet>
 							<objects>
-								<PathPoint name="NEW_MUCS-P1">
+								<PathPoint name="NEW_MUSC-P1">
 									<location> -0.005 0.001 0.189</location>
 									<body>base</body>
 								</PathPoint>
-								<PathPoint name="NEW_MUCS-P2">
+								<PathPoint name="NEW_MUSC-P2">
 									<location> 0.021 -0.09 0.006</location>
 									<body>r_humerus</body>
 								</PathPoint>
-								<PathPoint name="NEW_MUCS-P3">
+								<PathPoint name="NEW_MUSC-P3">
 									<location> 0.044 -0.193 0.015</location>
 									<body>r_humerus</body>
 								</PathPoint>
-								<!-- <PathPoint name="TRIlong-P4">
+<!-- 								<PathPoint name="TRIlong-P4">
 									<location> -0.01743 -0.26757 -0.01208</location>
 									<body>r_humerus</body>
-								</PathPoint> -->
-								<!-- <PathPoint name="TRIlong-P5">
-									<location> 0.0219 0.01046 -0.00078</location>
+								</PathPoint>
+								<PathPoint name="TRIlong-P5">
+									<location> -0.0219 0.01046 -0.00078</location>
 									<body>r_ulna_radius_hand</body>
 								</PathPoint> -->
 							</objects>
@@ -1637,7 +1637,7 @@
 							<!--Whether to show a coordinate frame-->
 							<show_axes>false</show_axes>
 							<!--Display Pref. 0:Hide 1:Wire 3:Flat 4:Shaded Can be overriden for individual geometries-->
-							<display_preference>3</display_preference>
+							<display_preference>4</display_preference>
 						</VisibleObject>
 						<PathWrapSet>
 							<objects>
@@ -1661,13 +1661,13 @@
 						</PathWrapSet>
 					</GeometryPath>
 					<!--The maximum force this actuator can produce.-->
-					<optimal_force>10</optimal_force>
+					<optimal_force>1</optimal_force>
 					<!--Maximum isometric force that the fibers can generate-->
 					<max_isometric_force>798.52</max_isometric_force>
 					<!--Optimal length of the muscle fibers-->
 					<optimal_fiber_length>0.134</optimal_fiber_length>
 					<!--Resting length of the tendon-->
-					<tendon_slack_length>0.023</tendon_slack_length>
+					<tendon_slack_length>0.143</tendon_slack_length>
 					<!--Angle between tendon and fibers at optimal fiber length expressed in radians-->
 					<pennation_angle_at_optimal>0.20943951</pennation_angle_at_optimal>
 					<!--Maximum contraction velocity of the fibers, in optimal fiberlengths/second-->
@@ -1677,15 +1677,15 @@
 					<!--time constant for ramping down of muscle activation-->
 					<deactivation_time_constant>0.04</deactivation_time_constant>
 					<!--tendon strain at maximum isometric muscle force-->
-					<FmaxTendonStrain>0.1</FmaxTendonStrain>
+					<FmaxTendonStrain>0.033</FmaxTendonStrain>
 					<!--passive muscle strain at maximum isometric muscle force-->
-					<FmaxMuscleStrain>0.1</FmaxMuscleStrain>
+					<FmaxMuscleStrain>0.6</FmaxMuscleStrain>
 					<!--shape factor for Gaussian active muscle force-length relationship-->
-					<KshapeActive>0.1</KshapeActive>
+					<KshapeActive>0.5</KshapeActive>
 					<!--exponential shape factor for passive force-length relationship-->
-					<KshapePassive>1</KshapePassive>
+					<KshapePassive>4</KshapePassive>
 					<!--force-velocity shape factor-->
-					<Af>0.3</Af> <!-- this was 0.3 -->
+					<Af>0.3</Af>
 					<!--maximum normalized lengthening force-->
 					<Flen>1.8</Flen>
 				</Thelen2003Muscle>

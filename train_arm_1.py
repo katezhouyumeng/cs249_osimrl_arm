@@ -1,4 +1,6 @@
 # This file trains the arm's own muscles
+# https://medium.com/@asteinbach/actor-critic-using-deep-rl-continuous-mountain-car-in-tensorflow-4c1fb2110f7c
+
 
 from osim_rl_master.osim.env.armLocal import Arm2DEnv
 from osim_rl_master.osim.env.armLocal import Arm2DVecEnv
@@ -26,6 +28,7 @@ env = Arm2DVecEnv(visualize=True)
 
 state_dims = env.observation_space.shape[0]
 state_placeholder = tf.placeholder(tf.float32, [None, state_dims])
+# state_action_placeholder = tf.placeholder(tf.float32, [None, state_dims])
 
 
 def value_function(state):
@@ -35,14 +38,17 @@ def value_function(state):
     
     with tf.variable_scope("value_network"):
         init_xavier = tf.contrib.layers.xavier_initializer() # a method of intializing
+        # concat = tf.concat([state, action], axis=0)
         hidden1 = tf.layers.dense(state, n_hidden1, tf.nn.relu, init_xavier)
         hidden2 = tf.layers.dense(hidden1, n_hidden1, tf.nn.relu, init_xavier)
         hidden3 = tf.layers.dense(hidden2, n_hidden1, tf.nn.relu, init_xavier)
+        hidden4 = tf.layers.dense(hidden3, n_hidden1, tf.nn.relu, init_xavier)
+        hidden5 = tf.layers.dense(hidden4, n_hidden1, tf.nn.relu, init_xavier)
 
         # hidden1_action = tf.layers.dense(action, n_hidden1, tf.nn.relu, init_xavier)
         # hidden2 = hidden1 + hidden1_action
-        hidden4 = tf.layers.dense(hidden3, n_hidden2, tf.nn.relu, init_xavier) 
-        V = tf.layers.dense(hidden4, n_outputs, tf.compat.v1.keras.activations.linear, init_xavier)
+        hidden6 = tf.layers.dense(hidden5, n_hidden2, tf.nn.relu, init_xavier) 
+        V = tf.layers.dense(hidden6, n_outputs, tf.compat.v1.keras.activations.linear, init_xavier)
     return V
 
 def policy_network(state):
@@ -82,6 +88,7 @@ lr_critic = 0.001
 
 # define required placeholders
 action_placeholder = tf.placeholder(tf.float32)
+# state_action_placeholder = tf.placeholder(tf.float32)
 delta_placeholder = tf.placeholder(tf.float32)
 target_placeholder = tf.placeholder(tf.float32)
 
@@ -134,7 +141,7 @@ def fake_critic(state):
 ################################################################
 #Training loop
 gamma = 0.99        #discount factor
-num_episodes = 200
+num_episodes = 100
 max_step = 70
 env.time_limit = max_step
 epsilon =0
@@ -197,6 +204,9 @@ with tf.Session() as sess:
             steps +=1
             reward_total += reward
             #V_of_next_state.shape=(1,1)
+            # next_action = sess.run(action_tf_var, feed_dict={
+            #                   state_placeholder: scale_state(next_state)})
+
             V_of_next_state = sess.run(V, feed_dict = 
                     {state_placeholder: scale_state(next_state)})  
 
@@ -217,17 +227,17 @@ with tf.Session() as sess:
             # td_error = target - fake_critic(state)
             
             if np.mod(steps, batch_size) ==0:
+                #Update critic by minimizinf loss  (Critic training)
+                _, loss_critic_val  = sess.run(
+                    [training_op_critic, loss_critic], 
+                    feed_dict={state_placeholder: scale_state(state), 
+                    target_placeholder: target})
                 #Update actor by minimizing loss (Actor training)
                 _, loss_actor_val  = sess.run(
                     [training_op_actor, loss_actor], 
                     feed_dict={action_placeholder: np.squeeze(action), 
                     state_placeholder: scale_state(state), 
                     delta_placeholder: td_error})
-                #Update critic by minimizinf loss  (Critic training)
-                _, loss_critic_val  = sess.run(
-                    [training_op_critic, loss_critic], 
-                    feed_dict={state_placeholder: scale_state(state), 
-                    target_placeholder: target})
             
             state = np.array(next_state)
             #end while

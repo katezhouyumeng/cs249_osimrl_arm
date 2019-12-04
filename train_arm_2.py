@@ -8,7 +8,7 @@ from osim_rl_master.osim.env.armLocal import Arm2DVecEnv
 import gym
 import numpy as np 
 from keras.models import Sequential, Model
-from keras.layers import Dense, Dropout, Input
+from keras.layers import Dense, Dropout, Input, Flatten,concatenate
 from keras.layers.merge import Add, Multiply
 from keras.optimizers import Adam
 import keras.backend as K
@@ -28,7 +28,7 @@ class ActorCritic:
 		self.sess = sess
 
 		self.learning_rate = 0.01
-		self.epsilon = 0.1
+		self.epsilon = 0.3
 		self.epsilon_decay = 1   # how much exploration is decaying - not decaying
 		self.gamma = .99
 		self.tau   = 0.001
@@ -82,24 +82,35 @@ class ActorCritic:
 		model = Model(input=state_input, output=output)
 		adam  = Adam(lr=0.001)
 		model.compile(loss="mse", optimizer=adam)
+		print(model.summary())
+
 		return state_input, model
 
 	def create_critic_model(self):
+		# print("what is shape",self.env.observation_space.shape)
+		# state_input = Input(shape=self.env.observation_space.shape[0])
 		state_input = Input(shape=self.env.observation_space.shape)
-		state_h1 = Dense(64, activation='relu')(state_input)
-		state_h2 = Dense(64)(state_h1)
-		state_h3 = Dense(64)(state_h2)
-		
+		# flattened_observation = Flatten()(observation_input)
+
 		action_input = Input(shape=self.env.action_space.shape)
-		action_h1    = Dense(64)(action_input)
+		# flattened_action = Flatten()(action_input)
+
+		merged    = concatenate([state_input, action_input])
+
+
+		state_h1 = Dense(64, activation='relu')(merged)
+		state_h2 = Dense(64, activation='relu')(state_h1)
+		state_h3 = Dense(64, activation='relu')(state_h2)
 		
-		merged    = Add()([state_h3, action_h1])
-		merged_h1 = Dense(2, activation='relu')(merged)
-		output = Dense(1, activation='linear')(merged_h1)
+		# action_h1    = Dense(64)(action_input)
+		
+		# merged_h1 = Dense(2, activation='relu')(merged)
+		output = Dense(1, activation='linear')(state_h3)
 		model  = Model(input=[state_input,action_input], output=output)
 		
 		adam  = Adam(lr=0.001)
 		model.compile(loss="mse", optimizer=adam)
+		print(model.summary())
 		return state_input, action_input, model
 
 			###################################################################
@@ -112,7 +123,15 @@ class ActorCritic:
 	    pos_y = state[-1]
 
 	    penalty = (pos_x - target_x)**2 + (pos_y - target_y)**2
-	    return 1.-penalty
+
+	    reward =  1.-penalty
+	    sd = self.env.get_state_desc()
+	    wr_x = sd["markers"]["r_humerus_epicondyle"]["pos"][0]
+
+	    if wr_x > pos_x:
+	    	reward -=50
+
+	    return reward
 
 ################################################################
 
@@ -143,10 +162,10 @@ class ActorCritic:
 			cur_state, action, reward, new_state, done = sample
 			if not done:
 				target_action = self.target_actor_model.predict(new_state)
-				# future_reward_fake = self.fake_critic(new_state[0])
+				future_reward_fake = self.fake_critic(new_state[0])
 				future_reward = self.target_critic_model.predict(
 					[new_state, target_action])[0][0]
-				reward += self.gamma * future_reward
+				reward += self.gamma * future_reward_fake
 			# print (cur_state)
 			# print(action)
 			# print(reward)
@@ -218,9 +237,9 @@ def main():
 
 	actor_critic = ActorCritic(env, sess)
 
-	num_episode = 100  # number of episodes
-	episode_len  = 100
-	batch_size = 5
+	num_episode = 500  # number of episodes
+	episode_len  = 200
+	batch_size = 32
 
 	env.time_limit = episode_len
 
@@ -237,7 +256,7 @@ def main():
 		print('INIT state', cur_state)
 		# action = env.action_space.sample()
 		# clear th ememory queue
-		actor_critic.memory = deque(maxlen=2000)
+		# actor_critic.memory = deque(maxlen=2000)
 		r_all = 0
 
 		# if e>50:

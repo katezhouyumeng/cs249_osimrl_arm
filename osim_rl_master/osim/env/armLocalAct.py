@@ -8,7 +8,7 @@ import random
 from .osim import OsimEnv
 
 class Arm2DEnv(OsimEnv):
-    model_path = os.path.join(os.path.dirname(__file__), '../models/arm2dof6musc_withbucket.osim')    
+    model_path = os.path.join(os.path.dirname(__file__), '../models/arm2dof6musc_mod2.osim')    
     time_limit = 2000
     target_x = 0
     target_y = 0
