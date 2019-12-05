@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 
 # create the arm
 env = Arm2DEnv(visualize=True)
+env.render()
+
 
 pos_all_x = []
 pos_all_y = []
@@ -14,9 +16,10 @@ pos_all_z = []
 
 if __name__ == '__main__':
     observation = env.reset() 
-    action = np.array([1, 0, 0, 0, 0, 0, 0])
+    # which actions do more work, 1 and 4
+    action = np.array([0, 0, 0, 0, 0, 0, 0, 1])
     # action = env.action_space.sample()
-    for i in range(100):
+    for i in range(500):
         print(i)
     	# action = 10*np.random.rand(6,1)
         observation, reward, done, info = env.step(action, obs_as_dict=True)
@@ -30,7 +33,6 @@ if __name__ == '__main__':
     	# pos_all_y.append(humerus_pos[1])
     	# pos_all_z.append(humerus_pos[2])
 # 
-env.render()
 # print('position all x', pos_all_x)
 # print('position all y', pos_all_y)
 # print('position all z', pos_all_z)

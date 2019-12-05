@@ -58,7 +58,7 @@ class Arm2DEnv(OsimEnv):
 
     def generate_new_target(self):
         theta = random.uniform(math.pi*0, math.pi*2/3)  # low and high
-        radius = random.uniform(0.1, 0.3)
+        radius = random.uniform(0.3, 0.65)
         self.target_x = math.cos(theta) * radius 
         self.target_y = -math.sin(theta) * radius + 0.8
         # self.target_x = 0.3067948841189234

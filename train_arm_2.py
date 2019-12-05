@@ -2,8 +2,8 @@
 solving pendulum using actor-critic model
 https://towardsdatascience.com/reinforcement-learning-w-keras-openai-actor-critic-models-f084612cfd69
 """
-from osim_rl_master.osim.env.armLocal import Arm2DEnv
-from osim_rl_master.osim.env.armLocal import Arm2DVecEnv
+from osim_rl_master.osim.env.armLocalAct import Arm2DEnv
+from osim_rl_master.osim.env.armLocalAct import Arm2DVecEnv
 
 import gym
 import numpy as np 
@@ -96,6 +96,7 @@ class ActorCritic:
 		# flattened_action = Flatten()(action_input)
 
 		merged    = concatenate([state_input, action_input])
+		
 
 
 		state_h1 = Dense(64, activation='relu')(merged)
@@ -237,7 +238,7 @@ def main():
 
 	actor_critic = ActorCritic(env, sess)
 
-	num_episode = 500  # number of episodes
+	num_episode = 100  # number of episodes
 	episode_len  = 200
 	batch_size = 32
 

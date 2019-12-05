@@ -2,8 +2,10 @@
 # https://medium.com/@asteinbach/actor-critic-using-deep-rl-continuous-mountain-car-in-tensorflow-4c1fb2110f7c
 
 
-from osim_rl_master.osim.env.armLocalAct import Arm2DEnv
-from osim_rl_master.osim.env.armLocalAct import Arm2DVecEnv
+# from osim_rl_master.osim.env.armLocalAct import Arm2DEnv
+# from osim_rl_master.osim.env.armLocalAct import Arm2DVecEnv
+
+from osim_rl_master.osim.env.Arm3DEnv import Arm3dEnv
 
 import pprint
 import numpy as np
@@ -24,7 +26,7 @@ import tensorflow as tf
 from collections import deque
 
 ## Initialize environment & set up networks
-env = Arm2DVecEnv(visualize=True)
+env = Arm3dEnv(visualize=True, integrator_accuracy=1e-4)
 
 state_dims = env.observation_space.shape[0]
 state_placeholder = tf.placeholder(tf.float32, [None, state_dims])
@@ -57,7 +59,7 @@ def policy_network(state):
     # n_hidden3 = 40
     # n_hidden4 = 40
     # n_hidden5 = 10
-    n_outputs = 8 # hardcoded number of muscles
+    n_outputs = 50 # hardcoded number of muscles
     
     with tf.variable_scope("policy_network"):
         init_xavier = tf.contrib.layers.xavier_initializer()
@@ -182,6 +184,7 @@ with tf.Session() as sess:
             # just check if policy has been updated
             # print(sess.run(action_tf_var, feed_dict={
             #                   state_placeholder: scale_state(INIT_state)}))
+            print('state is', state)
             if np.random.random() > epsilon:
                 action  = sess.run(action_tf_var, feed_dict={
                               state_placeholder: scale_state(state)})
@@ -217,8 +220,6 @@ with tf.Session() as sess:
             #target = r + gamma * V(next_state)     
             target = reward + gamma * np.squeeze(V_of_next_state)
 
-
-            
             # td_error = target - V(s)
             #needed to feed delta_placeholder in actor training
             td_error = target - np.squeeze(sess.run(V, feed_dict = 

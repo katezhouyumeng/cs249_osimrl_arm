@@ -54,13 +54,16 @@ class Arm2DEnv(OsimEnv):
     #     return [obv, reward, is_done, {}]
 
     def get_observation_space_size(self):
-        return 16 #46
+        return 16+1+1 #46
 
     def generate_new_target(self):
-        theta = random.uniform(math.pi*0, math.pi*2/3)
+        theta = random.uniform(math.pi*0, math.pi*1/3)
         radius = random.uniform(0.3, 0.65)
         self.target_x = math.cos(theta) * radius 
         self.target_y = -math.sin(theta) * radius + 0.8
+
+        # self.target_x = 0.3067948841189234
+        # self.target_y = 0.282675170747885
 
         print('\ntarget: [{} {}]'.format(self.target_x, self.target_y))
 
@@ -125,7 +128,10 @@ class Arm2DVecEnv(Arm2DEnv):
         if np.isnan(obs).any():
             obs = np.nan_to_num(obs)
         return obs
+
+    # kate's edit/overwritten method
     def step(self, action, obs_as_dict=False):
+        # print('actually here!')
         if np.isnan(action).any():
             action = np.nan_to_num(action)
         obs, reward, done, info = super(Arm2DVecEnv, self).step(action, obs_as_dict=obs_as_dict)
@@ -134,8 +140,19 @@ class Arm2DVecEnv(Arm2DEnv):
             done = True
             reward -10
 
-        if reward >0.99:
+        # if reached target big reward
+        if reward >0.98:
             done = True
             reward+=10
+
+        # check if elbow is bent wrong way
+        state_desc = self.get_state_desc()
+        el_pos_x = state_desc["markers"]["r_humerus_epicondyle"]["pos"][0]
+        wr_pos_x = obs[-2]
+        if el_pos_x > wr_pos_x+1e-1:
+            reward = -10
+            done = True
+            print('elbow violation! ')
+        return [obs, reward, done, info]
 
         return obs, reward, done, info

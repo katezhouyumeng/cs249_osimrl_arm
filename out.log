@@ -1,2 +1,162 @@
-Updating Model file from 20303 to latest format...
-Loaded model arm26 from file /Users/SRoubert/Documents/harvard classes/CS249R/cs249_osimrl_arm/osim_rl_master/osim/env/../models/arm2dof6musc.osim
+Updating Model file from 30000 to latest format...
+Loaded model MoBL_ARMS_Upper_Limb_Model_OpenSim from file /Users/ykzhou/Documents/cs249_osimrl_arm/osim_rl_master/osim/env/../models/ue_RL.osim
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'default'.
+The duplicate is being renamed to 'default_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'default'.
+The duplicate is being renamed to 'default_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_2'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'default'.
+The duplicate is being renamed to 'default_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'default'.
+The duplicate is being renamed to 'default_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'default'.
+The duplicate is being renamed to 'default_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'default'.
+The duplicate is being renamed to 'default_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_2'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_2'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_2'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_2'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_2'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_2'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_2'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_2'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_2'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_2'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_2'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_2'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_0'.
+GeometryPath 'geometrypath' has subcomponents with duplicate name 'pathwrap'.
+The duplicate is being renamed to 'pathwrap_1'.
