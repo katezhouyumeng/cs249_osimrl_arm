@@ -63,17 +63,19 @@ class Arm3dEnv(OsimEnv):
 
     def reward(self):
         # Get the current state and the last state
-        prev_state_desc = self.get_prev_state_desc()
-        if not prev_state_desc:
-            return 0
-        state_desc = self.get_state_desc()
+        # prev_state_desc = self.get_prev_state_desc()
+        # if not prev_state_desc:
+        #     return 0
+        # state_desc = self.get_state_desc()
 
-        print(state_desc['markers'])
-        distance = self.current_objective - state_desc["markers"]["r_radius_styloid"]["pos"]
+        # print(state_desc['markers'])
+        # distance = self.current_objective - state_desc["markers"]["r_radius_styloid"]["pos"]
 
-        penalty = distance[0]**2 + distance[1]**2 + distance[2]**2
+        # penalty = distance[0]**2 + distance[1]**2 + distance[2]**2
 
-        res = 1 - penalty
+        # res = 1 - penalty
+
+        # res =0
 
         # # Penalize movement of the pelvis
         # res = -(prev_state_desc["misc"]["mass_center_pos"][0] - state_desc["misc"]["mass_center_pos"][0])**2\

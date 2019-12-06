@@ -114,25 +114,25 @@ class ActorCritic:
 		print(model.summary())
 		return state_input, action_input, model
 
-			###################################################################
-	# Define fake critic
-	def fake_critic(self,state):
-	    target_x = state[0]
-	    target_y = state[1]
+	# 		###################################################################
+	# # Define fake critic
+	# def fake_critic(self,state):
+	#     target_x = state[0]
+	#     target_y = state[1]
 
-	    pos_x = state[-2]
-	    pos_y = state[-1]
+	#     pos_x = state[-2]
+	#     pos_y = state[-1]
 
-	    penalty = (pos_x - target_x)**2 + (pos_y - target_y)**2
+	#     penalty = (pos_x - target_x)**2 + (pos_y - target_y)**2
 
-	    reward =  1.-penalty
-	    sd = self.env.get_state_desc()
-	    wr_x = sd["markers"]["r_humerus_epicondyle"]["pos"][0]
+	#     reward =  1.-penalty
+	#     sd = self.env.get_state_desc()
+	#     wr_x = sd["markers"]["r_humerus_epicondyle"]["pos"][0]
 
-	    if wr_x > pos_x:
-	    	reward -=50
+	#     if wr_x > pos_x:
+	#     	reward -=50
 
-	    return reward
+	#     return reward
 
 ################################################################
 
@@ -247,6 +247,8 @@ def main():
 	# keep track of reward per episode
 	episode_reward =[0]*num_episode
 	episode_steps =[0]*num_episode
+	episod_dist_r =[0]*num_episode
+	episod_act_r = [0]*num_episode
 
 	for e in range(num_episode):
 		# intializations for each episode
@@ -259,6 +261,8 @@ def main():
 		# clear th ememory queue
 		# actor_critic.memory = deque(maxlen=2000)
 		r_all = 0
+		r_dist = 0
+		r_act = 0
 
 		# if e>50:
 		# 	episode_len = 20
@@ -280,34 +284,12 @@ def main():
 
 			# print('what is the action', action[0])
 			new_state, reward, done, _ = env.step(action[0], obs_as_dict=False)
-			# env.integrate()
 
-			# if reward<0.99:
-			# 	done = False
-			# else:
-			# 	done = True
-				# something wrong with their done function, always end at 201
-			# if k == 199 or  k==26:
-			# 	done = False
-			# 	print('taking action', action[0])
-			# # print("is it done", done)
-			# if done:
-			# 	# env.render()
-			# 	# reward2 = env.reward()
-			# 	# print("reward 1", reward)
-			# 	# print("reward 2", reward2)
-			# 	# print('istep', env.istep)
-			# 	# print("Sample a few times")
-			# 	# print(env.action_space.sample())
-			# 	# print(env.action_space.sample())
-			# 	# print(env.action_space.sample())
-			# 	# print(env.action_space.sample())
-			# 	# print(env.action_space.sample())
+			_, d_r, act_r = env.get_reward_separate()
 
-			# 	input("Press Enter to continue...")
+            r_dist += d_r
+            r_act +=act_r
 
-
-			# print("new state is", new_state)
 			new_state = np.array(new_state)
 			new_state = new_state.reshape((1, env.observation_space.shape[0]))
 
@@ -327,6 +309,8 @@ def main():
 
 		episode_steps[e] = k
 		episode_reward[e] = episode_reward[e]/k
+        episod_dist_r[e] = distance_rewards/k
+        episod_act_r[e] = activation_rewards/k
 
 	return episode_reward, episode_steps
 
@@ -334,8 +318,11 @@ if __name__ == "__main__":
 	episode_reward, episode_steps = main()
 
 	plt.plot(episode_reward)
+	plt.plot(episod_act_r)
+	plt.plot(episod_dist_r)
 	plt.ylabel('Total Reward')
 	plt.xlabel('Episode Number')
+	plt.legend(['Total Reward', 'Activation Reward', 'Distance Reward'])
 	plt.show()
 
 	plt.plot(episode_steps)

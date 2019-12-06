@@ -7,14 +7,14 @@ import numpy as np
 env = Arm3dEnv(visualize=True, integrator_accuracy=1e-1)
 env.reset_objective()
 
-state_desc = env.get_state_desc()
+# state_desc = env.get_state_desc()
 
-state_desc.get_
-action = np.array([0]*50)
-action[20] =1
+# state_desc.get_
+# action = np.array([0]*50)
+# action[20] =1
 
 
-observation, reward, done, info = env.step(action, obs_as_dict=False)
+# observation, reward, done, info = env.step(action, obs_as_dict=False)
 
 
 
@@ -25,31 +25,32 @@ if __name__ == '__main__':
     observation = env.reset()
     env.render()
 
-    observation = env.reset() 
+    # observation = env.reset() 
 
-    obs = env.get_observation()
-    print(obs.shape)
+    # obs = env.get_observation()
+    # print(obs.shape)
 
-    sample = env.observation_space.sample()
-    print(env.observation_space.shape[0])
-    print(sample)
+    # sample = env.observation_space.sample()
+    # print(env.observation_space.shape[0])
+    # print(sample)
 
-    print('target is')
-    print(env.current_objective)
+    # print('target is')
+    # print(env.current_objective)
 
-    print('observation is')
-    print
+    # print('observation is')
+    # print
 
-    action = env.action_space.sample()
-    action = np.array([0]*50)
-    action[20] =1
+    for k in range(1000):
 
+        action = env.action_space.sample()
+        action = np.array([0]*50)
+        action[20] =1
 
-    observation, reward, done, info = env.step(action, obs_as_dict=False)
+        observation, reward, done, info = env.step(action, obs_as_dict=False)
 
-    print(observation.shape)
-    print('observation is')
-    print(observation)
+        print(observation.shape)
+        print('observation is')
+        print(observation)
 
     # action = np.array([0, 0, 0, 0, 1, 0, 0])
     

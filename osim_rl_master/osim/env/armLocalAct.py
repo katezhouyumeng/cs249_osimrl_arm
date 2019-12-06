@@ -42,6 +42,35 @@ class Arm2DEnv(OsimEnv):
 
         return res
 
+    def get_observation_arm(self):
+        state_desc = self.get_state_desc()
+
+        res = [self.target_x, self.target_y]
+
+        # for body_part in ["r_humerus", "r_ulna_radius_hand"]:
+        #     res += state_desc["body_pos"][body_part][0:2]
+        #     res += state_desc["body_vel"][body_part][0:2]
+        #     res += state_desc["body_acc"][body_part][0:2]
+        #     res += state_desc["body_pos_rot"][body_part][2:]
+        #     res += state_desc["body_vel_rot"][body_part][2:]
+        #     res += state_desc["body_acc_rot"][body_part][2:]
+
+        for joint in ["r_shoulder","r_elbow",]:
+            res += state_desc["joint_pos"][joint]
+            res += state_desc["joint_vel"][joint]
+            res += state_desc["joint_acc"][joint]
+
+        for muscle in sorted(state_desc["muscles"].keys()):
+            if muscle == 'New_Musc_backward' or  muscle == 'New_Musc_forward':
+                continue
+            res += [state_desc["muscles"][muscle]["activation"]]
+            # res += [state_desc["muscles"][muscle]["fiber_length"]]
+            # res += [state_desc["muscles"][muscle]["fiber_velocity"]]
+
+        res += state_desc["markers"]["r_radius_styloid"]["pos"][:2]
+
+        return res
+
     # def step(self, action):
     #     obv, reward, is_done, _  = super().step(action)
     #     if reward > 0.99:
@@ -57,13 +86,13 @@ class Arm2DEnv(OsimEnv):
         return 16+1+1 #46
 
     def generate_new_target(self):
-        theta = random.uniform(math.pi*0, math.pi*2/3)
-        radius = random.uniform(0.3, 0.65)
-        self.target_x = math.cos(theta) * radius 
-        self.target_y = -math.sin(theta) * radius + 0.8
+        # theta = random.uniform(math.pi*0, math.pi*2/3)
+        # radius = random.uniform(0.3, 0.65)
+        # self.target_x = math.cos(theta) * radius 
+        # self.target_y = -math.sin(theta) * radius + 0.8
 
-        # self.target_x = 0.3067948841189234
-        # self.target_y = 0.582675170747885
+        self.target_x = 0.3067948841189234
+        self.target_y = 0.582675170747885
 
         print('\ntarget: [{} {}]'.format(self.target_x, self.target_y))
 
@@ -107,6 +136,10 @@ class Arm2DEnv(OsimEnv):
         self.osim_model.model.initSystem()
     
     def reward(self):
+        reward_total, distance_reward, activation_reward = self.get_reward_separate()
+        return reward_total
+
+    def get_reward_separate(self):
         state_desc = self.get_state_desc()
         dist_penalty = (state_desc["markers"]["r_radius_styloid"]["pos"][0] - self.target_x)**2 + (state_desc["markers"]["r_radius_styloid"]["pos"][1] - self.target_y)**2
         # print(state_desc["markers"]["r_radius_styloid"]["pos"])
@@ -115,18 +148,23 @@ class Arm2DEnv(OsimEnv):
         if np.isnan(dist_penalty):
             dist_penalty = 1
 
+        if dist_penalty<0:
+            dist_penalty =0
+
         activation_penalty = 0
         for muscle in sorted(state_desc["muscles"].keys()):
             if muscle == 'New_Musc_backward' or  muscle == 'New_Musc_forward':
-                activation_penalty +=0
+                activation_penalty = activation_penalty
             else:
                 activation_penalty += state_desc["muscles"][muscle]["activation"]
 
         # print("distance penalty", dist_penalty)
         # print("actiation penalty", activation_penalty)
         # print('penalty returned', 1.-2**(penalty))
-        return 1. - 5*dist_penalty - activation_penalty
-        # return 0
+        total_reward = -10*dist_penalty - activation_penalty
+        dist_reward = -10*dist_penalty
+        activation_reward = - activation_penalty
+        return total_reward, dist_reward, activation_reward
 
     def get_reward(self):
         return self.reward()
@@ -153,18 +191,17 @@ class Arm2DVecEnv(Arm2DEnv):
         # if reached target big reward
         state_desc = self.get_state_desc()
         penalty = (state_desc["markers"]["r_radius_styloid"]["pos"][0] - self.target_x)**2 + (state_desc["markers"]["r_radius_styloid"]["pos"][1] - self.target_y)**2
-        if penalty < 0.05:
+        if penalty < 0.1:
             done = True
-            reward+=1
+            reward+=100
 
         # check if elbow is bent wrong way
         state_desc = self.get_state_desc()
         el_pos_x = state_desc["markers"]["r_humerus_epicondyle"]["pos"][0]
         wr_pos_x = obs[-2]
-        if el_pos_x > wr_pos_x+1e-1:
-            reward = -1
+        if el_pos_x > wr_pos_x+2e-1:
+            reward += -5000
             done = True
+            # info = -1
             print('elbow violation! ')
         return [obs, reward, done, info]
-
-        return obs, reward, done, info

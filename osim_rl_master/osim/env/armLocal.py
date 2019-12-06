@@ -142,14 +142,14 @@ class Arm2DVecEnv(Arm2DEnv):
         # if reached target big reward
         if reward >0.98:
             done = True
-            reward+=10
+            reward =1
 
         # check if elbow is bent wrong way
         state_desc = self.get_state_desc()
         el_pos_x = state_desc["markers"]["r_humerus_epicondyle"]["pos"][0]
         wr_pos_x = obs[-2]
         if el_pos_x > wr_pos_x+1e-1:
-            reward = -10
+            reward = -1
             done = True
             print('elbow violation! ')
         return [obs, reward, done, info]
