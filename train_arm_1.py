@@ -24,7 +24,7 @@ import tensorflow as tf
 from collections import deque
 
 ## Initialize environment & set up networks
-env = Arm2DVecEnv(visualize=True)
+env = Arm2DVecEnv(visualize=True, integrator_accuracy=1e-2)
 
 state_dims = env.observation_space.shape[0]
 state_placeholder = tf.placeholder(tf.float32, [None, state_dims])
@@ -141,11 +141,11 @@ def fake_critic(state):
 ################################################################
 #Training loop
 gamma = 0.99        #discount factor
-num_episodes = 150
-max_step = 70
+num_episodes = 100
+max_step = 500
 env.time_limit = max_step
 epsilon =0.3
-batch_size = 5
+batch_size = 1
 
 # debug code
 # env.reset()
@@ -169,60 +169,43 @@ with tf.Session() as sess:
         reward_total = 0 
         steps = 0
         done = False
-        # if episode>50:
-        #     max_step = 20
-        # elif episode>75:
-        #     max_step = 50
 
         while (not done) and steps<max_step:
-                
-            #Sample action according to current policy
-            #action.shape = (1,1)
-            # print('what is state', state)
-            # just check if policy has been updated
-            # print(sess.run(action_tf_var, feed_dict={
-            #                   state_placeholder: scale_state(INIT_state)}))
+            # select an action
             if np.random.random() > epsilon:
                 action  = sess.run(action_tf_var, feed_dict={
-                              state_placeholder: scale_state(state)})
+                              state_placeholder: state.reshape((1, state_dims))})
             else:
                 action = np.array(env.action_space.sample())
 
             action = action.reshape((1, env.action_space.shape[0])) 
 
 
-            # if np.any(np.isnan(action[0])) or len(action[0]) ==0:
-            #     action = env.action_space.sample()
-
-            #Execute action and observe reward & next state from E
-            # next_state shape=(2,)    
-            #env.step() requires input shape = (1,)
-            # print('action taken', action)
+            # take the action
             next_state, reward, done, _ = env.step(
                                     np.squeeze(action, axis=0), obs_as_dict=False) 
 
             steps +=1
             reward_total += reward
+            next_state = np.array(next_state)
             #V_of_next_state.shape=(1,1)
             # next_action = sess.run(action_tf_var, feed_dict={
             #                   state_placeholder: scale_state(next_state)})
 
             V_of_next_state = sess.run(V, feed_dict = 
-                    {state_placeholder: scale_state(next_state)})  
+                    {state_placeholder: next_state.reshape((1, state_dims))})  
 
-            V_of_next_state_fake = fake_critic(next_state)
+            # V_of_next_state_fake = fake_critic(next_state)
             # print('predicted V', V_of_next_state)
             # print("true V", V_of_next_state_fake)
             #Set TD Target
             #target = r + gamma * V(next_state)     
             target = reward + gamma * np.squeeze(V_of_next_state)
 
-
-            
             # td_error = target - V(s)
             #needed to feed delta_placeholder in actor training
             td_error = target - np.squeeze(sess.run(V, feed_dict = 
-                        {state_placeholder: scale_state(state)})) 
+                        {state_placeholder: state.reshape((1, state_dims))})) 
 
             # td_error = target - fake_critic(state)
             
@@ -230,13 +213,13 @@ with tf.Session() as sess:
                 #Update critic by minimizinf loss  (Critic training)
                 _, loss_critic_val  = sess.run(
                     [training_op_critic, loss_critic], 
-                    feed_dict={state_placeholder: scale_state(state), 
+                    feed_dict={state_placeholder: state.reshape((1, state_dims)), 
                     target_placeholder: target})
                 #Update actor by minimizing loss (Actor training)
                 _, loss_actor_val  = sess.run(
                     [training_op_actor, loss_actor], 
                     feed_dict={action_placeholder: np.squeeze(action), 
-                    state_placeholder: scale_state(state), 
+                    state_placeholder: state.reshape((1, state_dims)), 
                     delta_placeholder: td_error})
             
             state = np.array(next_state)

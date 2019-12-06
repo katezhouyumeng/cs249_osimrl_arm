@@ -1,22 +1,65 @@
 
 from osim_rl_master.osim.env.Arm3DEnv import Arm3dEnv
+import numpy as np
 # from osim_rl_master.osim.env.armLocalAct import Arm2DEnv
 
 # env = Arm3dEnv()
-env = Arm3dEnv(visualize=True, integrator_accuracy=1e-4)
+env = Arm3dEnv(visualize=True, integrator_accuracy=1e-1)
+env.reset_objective()
+
+state_desc = env.get_state_desc()
+
+state_desc.get_
+action = np.array([0]*50)
+action[20] =1
+
+
+observation, reward, done, info = env.step(action, obs_as_dict=False)
+
+
+
+
+# print(env.get_state_desc().keys())
 
 if __name__ == '__main__':
     observation = env.reset()
     env.render()
 
     observation = env.reset() 
-    # action = np.array([0, 0, 0, 0, 1, 0, 0])
+
+    obs = env.get_observation()
+    print(obs.shape)
+
+    sample = env.observation_space.sample()
+    print(env.observation_space.shape[0])
+    print(sample)
+
+    print('target is')
+    print(env.current_objective)
+
+    print('observation is')
+    print
+
     action = env.action_space.sample()
-    print('shapeline', env.action_space.shape)
-    for i in range(10000):
-        print(i)
+    action = np.array([0]*50)
+    action[20] =1
+
+
+    observation, reward, done, info = env.step(action, obs_as_dict=False)
+
+    print(observation.shape)
+    print('observation is')
+    print(observation)
+
+    # action = np.array([0, 0, 0, 0, 1, 0, 0])
+    
+    # print('shapeline', env.action_space.shape)
+    # for i in range(10000):
+        # print(i)
         # action = 10*np.random.rand(6,1)
-        observation, reward, done, info = env.step(action, obs_as_dict=True)
+        # observation, reward, done, info = env.step(action, obs_as_dict=False)
+        # print(observation)
+
 
     # returns a compiled model
     # identical to the previous one

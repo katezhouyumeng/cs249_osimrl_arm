@@ -1590,7 +1590,7 @@
 					<!--maximum normalized lengthening force-->
 					<Flen>1.8</Flen>
 				</Thelen2003Muscle>
-				<Thelen2003Muscle name="New_Musc">
+				<Thelen2003Muscle name="New_Musc_forward">
 					<!--Flag indicating whether the force is disabled or not. Disabled means that the force is not active in subsequent dynamics realizations.-->
 					<isDisabled>false</isDisabled>
 					<!--Minimum allowed value for control signal. Used primarily when solving for control values.-->
@@ -1601,103 +1601,12 @@
 					<GeometryPath>
 						<PathPointSet>
 							<objects>
-								<PathPoint name="NEW_MUCS-P1">
-									<location> -0.005 0.001 0.189</location>
+								<PathPoint name="New_Musc_forward-P1">
+									<location> 0.41117 -0.25576 0.17</location>
 									<body>base</body>
 								</PathPoint>
-								<PathPoint name="NEW_MUCS-P2">
-									<location> 0.021 -0.09 0.006</location>
-									<body>r_humerus</body>
-								</PathPoint>
-								<PathPoint name="NEW_MUCS-P3">
-									<location> 0.044 -0.193 0.015</location>
-									<body>r_humerus</body>
-								</PathPoint>
-							</objects>
-							<groups />
-						</PathPointSet>
-						<VisibleObject>
-							<!--Set of geometry files and associated attributes, allow .vtp, .stl, .obj-->
-							<GeometrySet>
-								<objects />
-								<groups />
-							</GeometrySet>
-							<!--Three scale factors for display purposes: scaleX scaleY scaleZ-->
-							<scale_factors> 1 1 1</scale_factors>
-							<!--transform relative to owner specified as 3 rotations (rad) followed by 3 translations rX rY rZ tx ty tz-->
-							<transform> -0 0 -0 0 0 0</transform>
-							<!--Whether to show a coordinate frame-->
-							<show_axes>false</show_axes>
-							<!--Display Pref. 0:Hide 1:Wire 3:Flat 4:Shaded Can be overriden for individual geometries-->
-							<display_preference>4</display_preference>
-						</VisibleObject>
-						<PathWrapSet>
-							<objects>
-								<PathWrap name="TRIlong-wrap-cylinder1">
-									<wrap_object>TRI</wrap_object>
-									<method>hybrid</method>
-									<range> -1 -1</range>
-								</PathWrap>
-								<PathWrap name="TRIlong-wrap-ellipsoid">
-									<wrap_object>TRIlonghh</wrap_object>
-									<method>hybrid</method>
-									<range> -1 -1</range>
-								</PathWrap>
-								<PathWrap name="TRIlong-wrap-cylinder2">
-									<wrap_object>TRIlongglen</wrap_object>
-									<method>hybrid</method>
-									<range> -1 -1</range>
-								</PathWrap>
-							</objects>
-							<groups />
-						</PathWrapSet>
-					</GeometryPath>
-					<!--The maximum force this actuator can produce.-->
-					<optimal_force>1</optimal_force>
-					<!--Maximum isometric force that the fibers can generate-->
-					<max_isometric_force>798.52</max_isometric_force>
-					<!--Optimal length of the muscle fibers-->
-					<optimal_fiber_length>0.134</optimal_fiber_length>
-					<!--Resting length of the tendon-->
-					<tendon_slack_length>0.143</tendon_slack_length>
-					<!--Angle between tendon and fibers at optimal fiber length expressed in radians-->
-					<pennation_angle_at_optimal>0.20943951</pennation_angle_at_optimal>
-					<!--Maximum contraction velocity of the fibers, in optimal fiberlengths/second-->
-					<max_contraction_velocity>10</max_contraction_velocity>
-					<!--time constant for ramping up muscle activation-->
-					<activation_time_constant>0.01</activation_time_constant>
-					<!--time constant for ramping down of muscle activation-->
-					<deactivation_time_constant>0.04</deactivation_time_constant>
-					<!--tendon strain at maximum isometric muscle force-->
-					<FmaxTendonStrain>0.033</FmaxTendonStrain>
-					<!--passive muscle strain at maximum isometric muscle force-->
-					<FmaxMuscleStrain>0.6</FmaxMuscleStrain>
-					<!--shape factor for Gaussian active muscle force-length relationship-->
-					<KshapeActive>0.5</KshapeActive>
-					<!--exponential shape factor for passive force-length relationship-->
-					<KshapePassive>4</KshapePassive>
-					<!--force-velocity shape factor-->
-					<Af>0.3</Af>
-					<!--maximum normalized lengthening force-->
-					<Flen>1.8</Flen>
-				</Thelen2003Muscle>
-				<Thelen2003Muscle name="New_Musc_2_elb">
-					<!--Flag indicating whether the force is disabled or not. Disabled means that the force is not active in subsequent dynamics realizations.-->
-					<isDisabled>false</isDisabled>
-					<!--Minimum allowed value for control signal. Used primarily when solving for control values.-->
-					<min_control>0</min_control>
-					<!--Maximum allowed value for control signal. Used primarily when solving for control values.-->
-					<max_control>1</max_control>
-					<!--The set of points defining the path of the muscle.-->
-					<GeometryPath>
-						<PathPointSet>
-							<objects>
-								<PathPoint name="NEW_MUCS_2-P1">
-									<location> -0.01117 -0.01576 -0.01101</location>
-									<body>r_humerus</body>
-								</PathPoint>
-								<PathPoint name="NEW_MUCS-P2">
-									<location> -0.00751 -0.02839 0.01179</location>
+								<PathPoint name="New_Musc_forward-P2">
+									<location> -0.00751 -0.32839 0.01179</location>
 									<body>r_ulna_radius_hand</body>
 								</PathPoint>
 							</objects>
@@ -1744,15 +1653,102 @@
 					<!--Maximum isometric force that the fibers can generate-->
 					<max_isometric_force>798.52</max_isometric_force>
 					<!--Optimal length of the muscle fibers-->
-					<optimal_fiber_length>0.334</optimal_fiber_length>
+					<optimal_fiber_length>0.234</optimal_fiber_length>
 					<!--Resting length of the tendon-->
-					<tendon_slack_length>0.143</tendon_slack_length>
+					<tendon_slack_length>0.443</tendon_slack_length>
 					<!--Angle between tendon and fibers at optimal fiber length expressed in radians-->
 					<pennation_angle_at_optimal>0.20943951</pennation_angle_at_optimal>
 					<!--Maximum contraction velocity of the fibers, in optimal fiberlengths/second-->
 					<max_contraction_velocity>1</max_contraction_velocity>
 					<!--time constant for ramping up muscle activation-->
 					<activation_time_constant>0.01</activation_time_constant>
+					<!--time constant for ramping down of muscle activation-->
+					<deactivation_time_constant>0.04</deactivation_time_constant>
+					<!--tendon strain at maximum isometric muscle force-->
+					<FmaxTendonStrain>0.033</FmaxTendonStrain>
+					<!--passive muscle strain at maximum isometric muscle force-->
+					<FmaxMuscleStrain>0.6</FmaxMuscleStrain>
+					<!--shape factor for Gaussian active muscle force-length relationship-->
+					<KshapeActive>0.5</KshapeActive>
+					<!--exponential shape factor for passive force-length relationship-->
+					<KshapePassive>4</KshapePassive>
+					<!--force-velocity shape factor-->
+					<Af>0.3</Af>
+					<!--maximum normalized lengthening force-->
+					<Flen>1.8</Flen>
+				</Thelen2003Muscle>
+				<Thelen2003Muscle name="New_Musc_backward">
+					<!--Flag indicating whether the force is disabled or not. Disabled means that the force is not active in subsequent dynamics realizations.-->
+					<isDisabled>false</isDisabled>
+					<!--Minimum allowed value for control signal. Used primarily when solving for control values.-->
+					<min_control>0</min_control>
+					<!--Maximum allowed value for control signal. Used primarily when solving for control values.-->
+					<max_control>1</max_control>
+					<!--The set of points defining the path of the muscle.-->
+					<GeometryPath>
+						<PathPointSet>
+							<objects>
+								<PathPoint name="New_Musc_forward-P1">
+									<location> -0.36117 -0.31576 0.17</location>
+									<body>base</body>
+								</PathPoint>
+								<PathPoint name="New_Musc_forward-P2">
+									<location> 0.005 -0.2904 0.03</location>
+									<body>r_humerus</body>
+								</PathPoint>
+							</objects>
+							<groups />
+						</PathPointSet>
+						<VisibleObject>
+							<!--Set of geometry files and associated attributes, allow .vtp, .stl, .obj-->
+							<GeometrySet>
+								<objects />
+								<groups />
+							</GeometrySet>
+							<!--Three scale factors for display purposes: scaleX scaleY scaleZ-->
+							<scale_factors> 1 1 1</scale_factors>
+							<!--transform relative to owner specified as 3 rotations (rad) followed by 3 translations rX rY rZ tx ty tz-->
+							<transform> -0 0 -0 0 0 0</transform>
+							<!--Whether to show a coordinate frame-->
+							<show_axes>false</show_axes>
+							<!--Display Pref. 0:Hide 1:Wire 3:Flat 4:Shaded Can be overriden for individual geometries-->
+							<display_preference>4</display_preference>
+						</VisibleObject>
+						<PathWrapSet>
+							<objects>
+								<PathWrap name="TRIlong-wrap-cylinder1">
+									<wrap_object>TRI</wrap_object>
+									<method>hybrid</method>
+									<range> -1 -1</range>
+								</PathWrap>
+								<PathWrap name="TRIlong-wrap-ellipsoid">
+									<wrap_object>TRIlonghh</wrap_object>
+									<method>hybrid</method>
+									<range> -1 -1</range>
+								</PathWrap>
+								<PathWrap name="TRIlong-wrap-cylinder2">
+									<wrap_object>TRIlongglen</wrap_object>
+									<method>hybrid</method>
+									<range> -1 -1</range>
+								</PathWrap>
+							</objects>
+							<groups />
+						</PathWrapSet>
+					</GeometryPath>
+					<!--The maximum force this actuator can produce.-->
+					<optimal_force>1</optimal_force>
+					<!--Maximum isometric force that the fibers can generate-->
+					<max_isometric_force>998.52</max_isometric_force>
+					<!--Optimal length of the muscle fibers-->
+					<optimal_fiber_length>0.134</optimal_fiber_length>
+					<!--Resting length of the tendon-->
+					<tendon_slack_length>0.173</tendon_slack_length>
+					<!--Angle between tendon and fibers at optimal fiber length expressed in radians-->
+					<pennation_angle_at_optimal>0.20943951</pennation_angle_at_optimal>
+					<!--Maximum contraction velocity of the fibers, in optimal fiberlengths/second-->
+					<max_contraction_velocity>1</max_contraction_velocity>
+					<!--time constant for ramping up muscle activation-->
+					<activation_time_constant>0.1</activation_time_constant>
 					<!--time constant for ramping down of muscle activation-->
 					<deactivation_time_constant>0.04</deactivation_time_constant>
 					<!--tendon strain at maximum isometric muscle force-->

@@ -26,9 +26,11 @@ import tensorflow as tf
 from collections import deque
 
 ## Initialize environment & set up networks
-env = Arm3dEnv(visualize=True, integrator_accuracy=1e-4)
+env = Arm3dEnv(visualize=True, integrator_accuracy=1e-2)
+env.reset()
 
-state_dims = env.observation_space.shape[0]
+obs = env.get_observation()
+state_dims = obs.shape[0]
 state_placeholder = tf.placeholder(tf.float32, [None, state_dims])
 # state_action_placeholder = tf.placeholder(tf.float32, [None, state_dims])
 
@@ -117,6 +119,10 @@ training_op_critic = tf.train.AdamOptimizer(
 #sample from state space for state normalization
 import sklearn
 import sklearn.preprocessing
+
+# size of a sample
+# test_sample = env.observation_space.sample()
+# print('size of a sample', )
                                     
 state_space_samples = np.array(
     [env.observation_space.sample() for x in range(10000)])
@@ -184,10 +190,14 @@ with tf.Session() as sess:
             # just check if policy has been updated
             # print(sess.run(action_tf_var, feed_dict={
             #                   state_placeholder: scale_state(INIT_state)}))
-            print('state is', state)
+
+            # test_sample = env.observation_space.sample()
+            # print('size of a sample', test_sample.shape)
+
+            # print('state is', state)
             if np.random.random() > epsilon:
                 action  = sess.run(action_tf_var, feed_dict={
-                              state_placeholder: scale_state(state)})
+                              state_placeholder: state.reshape((1,state_dims))})
             else:
                 action = np.array(env.action_space.sample())
 
@@ -211,9 +221,9 @@ with tf.Session() as sess:
             #                   state_placeholder: scale_state(next_state)})
 
             V_of_next_state = sess.run(V, feed_dict = 
-                    {state_placeholder: scale_state(next_state)})  
+                    {state_placeholder: next_state.reshape((1,state_dims))})  
 
-            V_of_next_state_fake = fake_critic(next_state)
+            # V_of_next_state_fake = fake_critic(next_state)
             # print('predicted V', V_of_next_state)
             # print("true V", V_of_next_state_fake)
             #Set TD Target
@@ -223,7 +233,7 @@ with tf.Session() as sess:
             # td_error = target - V(s)
             #needed to feed delta_placeholder in actor training
             td_error = target - np.squeeze(sess.run(V, feed_dict = 
-                        {state_placeholder: scale_state(state)})) 
+                        {state_placeholder: state.reshape((1,state_dims))})) 
 
             # td_error = target - fake_critic(state)
             
@@ -231,13 +241,13 @@ with tf.Session() as sess:
                 #Update critic by minimizinf loss  (Critic training)
                 _, loss_critic_val  = sess.run(
                     [training_op_critic, loss_critic], 
-                    feed_dict={state_placeholder: scale_state(state), 
+                    feed_dict={state_placeholder: state.reshape((1,state_dims)), 
                     target_placeholder: target})
                 #Update actor by minimizing loss (Actor training)
                 _, loss_actor_val  = sess.run(
                     [training_op_actor, loss_actor], 
                     feed_dict={action_placeholder: np.squeeze(action), 
-                    state_placeholder: scale_state(state), 
+                    state_placeholder: state.reshape((1,state_dims)), 
                     delta_placeholder: td_error})
             
             state = np.array(next_state)

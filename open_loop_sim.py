@@ -17,7 +17,7 @@ pos_all_z = []
 if __name__ == '__main__':
     observation = env.reset() 
     # which actions do more work, 1 and 4
-    action = np.array([0, 0, 0, 0, 0, 0, 0, 1])
+    action = np.array([0, 0, 0, 0, 0, 0, 0, 0])
     # action = env.action_space.sample()
     for i in range(500):
         print(i)

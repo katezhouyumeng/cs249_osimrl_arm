@@ -10995,6 +10995,14 @@
 		<!--Markers in the model.-->
 		<MarkerSet>
 			<objects />
+				<Marker name="r_radius_styloid">
+					<!--Body segment in the model on which the marker resides.-->
+					<body>proximal_row</body>
+					<!--Location of a marker on the body segment.-->
+					<location> -0.0011 -0.23559 0.0943</location>
+					<!--Flag (true or false) specifying whether or not a marker should be kept fixed in the marker placement step.  i.e. If false, the marker is allowed to move.-->
+					<fixed>false</fixed>
+				</Marker>
 			<groups />
 		</MarkerSet>
 		<!--ContactGeometries  in the model.-->

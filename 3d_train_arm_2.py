@@ -2,8 +2,7 @@
 solving pendulum using actor-critic model
 https://towardsdatascience.com/reinforcement-learning-w-keras-openai-actor-critic-models-f084612cfd69
 """
-from osim_rl_master.osim.env.armLocalAct import Arm2DEnv
-from osim_rl_master.osim.env.armLocalAct import Arm2DVecEnv
+from osim_rl_master.osim.env.Arm3DEnv import Arm3dEnv
 
 import gym
 import numpy as np 
@@ -234,7 +233,8 @@ class ActorCritic:
 def main():
 	sess = tf.Session()
 	K.set_session(sess)  # not sure about this, probably just setting to keras
-	env = Arm2DVecEnv(visualize=True, integrator_accuracy=1e-2)
+	## Initialize environment & set up networks
+	env = Arm3dEnv(visualize=True, integrator_accuracy=1e-2)
 
 	actor_critic = ActorCritic(env, sess)
 

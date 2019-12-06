@@ -68,7 +68,12 @@ class Arm3dEnv(OsimEnv):
             return 0
         state_desc = self.get_state_desc()
 
-        res = 0
+        print(state_desc['markers'])
+        distance = self.current_objective - state_desc["markers"]["r_radius_styloid"]["pos"]
+
+        penalty = distance[0]**2 + distance[1]**2 + distance[2]**2
+
+        res = 1 - penalty
 
         # # Penalize movement of the pelvis
         # res = -(prev_state_desc["misc"]["mass_center_pos"][0] - state_desc["misc"]["mass_center_pos"][0])**2\
