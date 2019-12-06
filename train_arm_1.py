@@ -33,7 +33,7 @@ state_placeholder = tf.placeholder(tf.float32, [None, state_dims])
 
 def value_function(state):
     n_hidden1 = 64 
-    n_hidden2 = 4
+    n_hidden2 = 24
     n_outputs = 1
     
     with tf.variable_scope("value_network"):
@@ -44,11 +44,13 @@ def value_function(state):
         hidden3 = tf.layers.dense(hidden2, n_hidden1, tf.nn.relu, init_xavier)
         hidden4 = tf.layers.dense(hidden3, n_hidden1, tf.nn.relu, init_xavier)
         hidden5 = tf.layers.dense(hidden4, n_hidden1, tf.nn.relu, init_xavier)
+        hidden6 = tf.layers.dense(hidden5, n_hidden1, tf.nn.relu, init_xavier)
+
 
         # hidden1_action = tf.layers.dense(action, n_hidden1, tf.nn.relu, init_xavier)
         # hidden2 = hidden1 + hidden1_action
-        hidden6 = tf.layers.dense(hidden5, n_hidden2, tf.nn.relu, init_xavier) 
-        V = tf.layers.dense(hidden6, n_outputs, tf.compat.v1.keras.activations.linear, init_xavier)
+        hidden7 = tf.layers.dense(hidden6, n_hidden2, tf.nn.relu, init_xavier) 
+        V = tf.layers.dense(hidden7, n_outputs, tf.compat.v1.keras.activations.linear, init_xavier)
     return V
 
 def policy_network(state):
@@ -64,11 +66,11 @@ def policy_network(state):
         
         hidden1 = tf.layers.dense(state, n_hidden1, tf.nn.relu, init_xavier)
         hidden2 = tf.layers.dense(hidden1, n_hidden2, tf.nn.relu, init_xavier)
-        hidden3 = tf.layers.dense(hidden2, n_hidden2, tf.nn.relu, init_xavier)
-        hidden4 = tf.layers.dense(hidden3, n_hidden2, tf.nn.relu, init_xavier)
-        hidden5 = tf.layers.dense(hidden4, n_hidden2, tf.nn.relu, init_xavier)
-        mu = tf.layers.dense(hidden5, n_outputs, tf.nn.sigmoid, init_xavier)
-        sigma = tf.layers.dense(hidden5, n_outputs, tf.nn.sigmoid, init_xavier)
+        # hidden3 = tf.layers.dense(hidden2, n_hidden2, tf.nn.relu, init_xavier)
+        # hidden4 = tf.layers.dense(hidden3, n_hidden2, tf.nn.relu, init_xavier)
+        # hidden5 = tf.layers.dense(hidden4, n_hidden2, tf.nn.relu, init_xavier)
+        mu = tf.layers.dense(hidden2, n_outputs, tf.nn.sigmoid, init_xavier)
+        sigma = tf.layers.dense(hidden2, n_outputs, tf.nn.sigmoid, init_xavier)
         sigma = tf.nn.softplus(sigma) + 1e-5
         norm_dist = tf.contrib.distributions.Normal(mu, sigma)
         action_tf_var = tf.squeeze(norm_dist.sample(1), axis=0)  # remove the batch dimension
@@ -144,7 +146,7 @@ gamma = 0.99        #discount factor
 num_episodes = 100
 max_step = 500
 env.time_limit = max_step
-epsilon =0.3
+epsilon =0
 batch_size = 1
 
 # debug code
@@ -159,6 +161,7 @@ batch_size = 1
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     episode_history = []
+    episode_steps = []
     for episode in range(num_episodes):
         #receive initial state from E
         goal = env.reset()   # state.shape -> (2,)
@@ -170,6 +173,8 @@ with tf.Session() as sess:
         steps = 0
         done = False
 
+        episode_distace =[]
+
         while (not done) and steps<max_step:
             # select an action
             if np.random.random() > epsilon:
@@ -179,27 +184,25 @@ with tf.Session() as sess:
                 action = np.array(env.action_space.sample())
 
             action = action.reshape((1, env.action_space.shape[0])) 
+            # print('action is', action)
 
 
             # take the action
             next_state, reward, done, _ = env.step(
-                                    np.squeeze(action, axis=0), obs_as_dict=False) 
+                                    np.squeeze(action, axis=0), obs_as_dict=False)
+
+            # keep track of distance
+            # state_desc = env.get_state_desc()
+            # dist_penalty = (state_desc["markers"]["r_radius_styloid"]["pos"][0] - env.target_x)**2 + (state_desc["markers"]["r_radius_styloid"]["pos"][1] - env.target_y)**2
+            # episode_distace.append(dist_penalty)
 
             steps +=1
             reward_total += reward
             next_state = np.array(next_state)
-            #V_of_next_state.shape=(1,1)
-            # next_action = sess.run(action_tf_var, feed_dict={
-            #                   state_placeholder: scale_state(next_state)})
 
             V_of_next_state = sess.run(V, feed_dict = 
                     {state_placeholder: next_state.reshape((1, state_dims))})  
-
-            # V_of_next_state_fake = fake_critic(next_state)
-            # print('predicted V', V_of_next_state)
-            # print("true V", V_of_next_state_fake)
-            #Set TD Target
-            #target = r + gamma * V(next_state)     
+   
             target = reward + gamma * np.squeeze(V_of_next_state)
 
             # td_error = target - V(s)
@@ -224,9 +227,15 @@ with tf.Session() as sess:
             
             state = np.array(next_state)
             #end while
-        episode_history.append(reward_total/steps)
-        print("Episode: {}, Number of Steps : {}, Cumulative reward: {:0.2f}".format(
-            episode, steps, reward_total))
+
+        # plt.plot(episode_distace)
+        # plt.show()
+        if steps>1:
+            episode_history.append(reward_total/steps)
+            episode_steps.append(steps)
+
+        print("Episode: {}, Number of Steps : {}, Average Cumulative reward: {:0.2f}".format(
+            episode, steps, reward_total/steps))
         
         # if np.mean(episode_history[-100:]) > 90 and len(episode_history) >= 101:
         #     print("****************Solved***************")
@@ -235,6 +244,14 @@ with tf.Session() as sess:
 
 # do some ploting
 plt.plot(episode_history)
+plt.ylabel('Reward/Step')
+plt.xlabel('Episode Number')
 plt.show()
+
+plt.plot(episode_steps)
+plt.ylabel('Total Steps to Reach Goal')
+plt.xlabel('Episodes Number')
+plt.show()
+
 
 

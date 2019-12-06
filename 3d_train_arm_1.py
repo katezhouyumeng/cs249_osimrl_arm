@@ -202,6 +202,7 @@ with tf.Session() as sess:
                 action = np.array(env.action_space.sample())
 
             action = action.reshape((1, env.action_space.shape[0])) 
+            print('action is', action)
 
 
             # if np.any(np.isnan(action[0])) or len(action[0]) ==0:
